@@ -1,6 +1,4 @@
-<p align="center">
-### MFQL Automation ###
-</p>
+## MFQL Automation
 
 Perl scripts to automate creation of MFQL files and parse outputs.
 
