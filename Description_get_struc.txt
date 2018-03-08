@@ -1,0 +1,46 @@
+Once LipidXplorer is run, it produces a csv file that includes all the results. 
+There are columns for masses, error, name of the precursors and fragments along with other information. 
+The get_struct.pl script 
+	parses this information to pull structures for the listed precursors and fragments, 
+	performs calculations of the number of methoxy groups, hydroxy groups and double bonds that are present in each of the precursors and fragments and 
+	compiles all of this information into a textbox along with the structure into a cdxml file. 
+Automated extraction of the structure and related information will fasten the analysis of the results and improve productivity.
+
+This is a perl script and can be run in the command line of the terminal. 
+3 inputs are required from the user: 
+	--in => the csv file output from LipidXplorer, 
+	--imgdir => the directory where the cdxml files for the precursors and fragments in the csv file are located and
+	--outdir => the output directory.
+
+The names for the precursors and the fragments in the LipidXplorer output are formatted as follows: name[x:y:z], where 
+	name will the specific name of the precursor, which should match the name of the structure present in the imgdir folder as name.cdxml. 
+	x is the number of extra Carbon atoms.
+	y is the number of double bonds and
+	z is the number of extra Oxygen atoms.
+
+2 cases for the precursors are described. 
+Cases where a glycosyl group is present in the precursor and cases where it is not. 
+This is identified by the script using the keyword "<no.>Gly " in the precursor name, where if it is present, the precursor will be determined to have <no.> number of glycosyl groups attached.
+
+So, for example, a precursor with name 2GlyName1[x:y:z] will be determined to have 2 glycosyl groups with x number of extra Carbons, y number of double bonds and z number of extra Oxygens. The script will search for a structure Name1.cdxml.
+Whereas a precursor with name Name2[x:y:z] will be determined to have no glycosyl groups with x number of extra Carbons, y number of double bonds and z number of extra Oxygens. The script will search for a structure Name2.cdxml.
+
+Names for fragments are searched for the script using the header line. 
+The column with header Name includes the names of the precursor and subsequent columns with headers NameFrag1, NameFrag2,…. are searched for the name of the fragments which will be formatted in the same way as described above.
+
+For cases where there is no glycosyl groups, the script parses each precursor and fragment names to collect the name, x, y and z values which are then used to report the number of Methoxy groups (x), number of double bonds (y) and the number of hydroxy groups (y-x). 
+The name will be used to find the cdxml structure. 
+Text lines that describe the name, fragments and the numbers calculated will be added to the structure and a new cdxml file will be produced in the outdir location.
+
+For cases where there are glycosyl groups, the script compares the x,y and z values obtained from the precursor to the x1, y1 and z1 values obtained from the subsequent fragments 
+where 
+	x-x1=1 and z-z1=1 indicates that the glycosyl group is a hexose.
+	x-x1=1 and z-z1=0 indicates that the glycosyl group is a deoxyhexose.
+	x-x1=0 and z-z1=0 indicates that the glycosyl group is a pentose.
+
+Only 1 structure from the last fragment without any glycosyl groups is reported along with text for the glycosyl group information as above and all the other information described above as a cdxml file in the outdir location.
+
+Output cdxml files are formatted as <line no.>_>name>.<no.if_fragment>.cdxml. 
+The line number refers to the line number in the cdxml file that the structure was retrieved from. Having this number allows the user to quickly refer to the csv file and line from where the structure was obtained.
+The name will be the exact same name as the precursor or fragment.
+If the structure is from a fragment, a number indicating the fragment number will be appended to the name.

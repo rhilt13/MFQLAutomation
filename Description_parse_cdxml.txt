@@ -1,0 +1,46 @@
+For analyzing any datasets using LipidXplorer, the first step is to create a mfql format file that includes the details of the query to be analyzed and the parameters to define the run. With the diverse amount of data contained in a Mass Spectrometry output, all researchers eventually end up creating a large array of these mfql files for defining a wide range of queries. Creating these files manually is a labor-intensive and an error prone step. 
+In order to address this problem, 
+we have designed an automated perl script called parse_cdxml.pl that can create these mfql files from a more common type cdxml file. 
+This script allows the users to submit the parameters through a command line and also provide a cdxml file containing the molecules they are interested in. 
+
+The script takes these inputs and formats everything into a mfql format and outputs a file ready for use with LipidXplorer. 
+With this script available to the researchers, they can save much valuable time with the automated generation of the mfql files.
+
+To run the script in a command line terminal of Linux environment, only perl needs to be installed. 
+There are no other software requirements. 
+In the command line, the user can type 
+	perl parse_cdxml.pl -h 
+to get the help pages. 
+The help pages have a detailed outline of all the arguments required by the script. 
+
+The only input file needed by the script is the cdxml file with the structures of interest. 
+Users can provide this file using the  --in argument. 
+
+Users also need to provide 
+	--nC the number of Carbon less and 
+	--nO the number of Oxygen less
+
+Users need to submit a name and code specific to the file run. 
+If the script finds a name and code in the cdxml file, it will use these by default. 
+
+Double bond ration (Dbr) is calculated automatically by default. 
+Users can change this by supplying their own dbr values using the option --dbr and then entering the lower dbr value followed by a "-" sign followed by the upper dbr value. Users also have the option of selecting the mode for the run. 
+
+By default, a negative mode is selected where protons are not added to the analysis. 
+Users can set this to a positive mode using the --mode option followed by pos2H for adding two protons or posNa for adding one proton and one Sodium. 
+
+A test file Test_Phenolics.cdxml is provided with the script. 
+In the folder using the terminal window, the user can type the command:
+
+perl parse_cdxml.pl --in Test_Phenolics.cdxml --out Test_Phenolics_out.mfql --name Phenolics --code tPh --dbr auto --nO 2 --nC 2  --mode neg --OMe no
+
+The above command generates the output in mfql format in file Test_Phenolics_out.mfql 
+Which has the compound name Phenolics and a code for the compound tPh.
+The number of Oxygen less is 2 and the number of Carbon less is 2.
+Dbr is set to calculate automatically and the mode is set to negative.
+Any of these options can be changed as per the user's need of the settings for the run as mentioned above.
+
+For help with the options, user can type:
+
+perl parse_cdxml.pl -h
+
